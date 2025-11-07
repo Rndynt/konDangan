@@ -8,16 +8,37 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Monitor, Tablet, Smartphone, Eye, Save, Share2, Home, FileText, Image, Calendar, Users, Mail } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Monitor, Tablet, Smartphone, Eye, Save, Share2, Home, FileText, Image, Calendar, Users, Mail, Gift, MessageSquare, Shapes, Plus, Trash2, EyeOff, Download, ExternalLink, Check, Sparkles, Copy } from "lucide-react";
+import { FaWhatsapp, FaFacebook, FaTwitter } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import WebsitePreview from "@/components/WebsitePreview";
+import AssetLibraryModal from "@/components/AssetLibraryModal";
 
 type DeviceType = "desktop" | "tablet" | "mobile";
+
+interface GalleryPhoto {
+  id: string;
+  url: string;
+  caption?: string;
+}
+
+interface Testimonial {
+  id: string;
+  name: string;
+  message: string;
+  relationship: string;
+}
 
 export default function EditorPage() {
   const [, params] = useRoute("/editor/:templateId");
   const [device, setDevice] = useState<DeviceType>("desktop");
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState("");
+  const [assetLibraryOpen, setAssetLibraryOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("hero");
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const [websiteData, setWebsiteData] = useState({
     coupleName: "Sarah & Ahmad",
@@ -30,10 +51,37 @@ export default function EditorPage() {
     receptionLocation: "Balai Kartini, Jakarta Selatan",
     ourStory: "Kami bertemu di sebuah kafe kecil di musim semi. Dari pertemuan sederhana itu, kami tahu bahwa ini adalah awal dari sesuatu yang istimewa.",
     primaryColor: "#c9a961",
-    fontFamily: "Inter"
+    fontFamily: "Inter",
+    galleryPhotos: [] as GalleryPhoto[],
+    bankName: "Bank Mandiri",
+    accountNumber: "1234567890",
+    accountHolderName: "Sarah & Ahmad",
+    testimonials: [
+      { id: "1", name: "Rina Wijaya", message: "Pasangan yang sempurna! Semoga langgeng hingga akhir hayat.", relationship: "Sahabat" }
+    ] as Testimonial[],
+  });
+
+  const [sectionVisibility, setSectionVisibility] = useState({
+    hero: true,
+    story: true,
+    event: true,
+    gallery: true,
+    giftRegistry: true,
+    testimonials: true,
   });
 
   const fonts = ["Inter", "Playfair Display", "Poppins", "Lora", "Montserrat", "Cormorant Garamond"];
+
+  const weddingColors = [
+    { name: "Gold", hex: "#c9a961" },
+    { name: "Blush Pink", hex: "#f4c2c2" },
+    { name: "Navy Blue", hex: "#1e3a8a" },
+    { name: "Sage Green", hex: "#9caf88" },
+    { name: "Lavender", hex: "#d4b5e4" },
+    { name: "Burgundy", hex: "#800020" },
+    { name: "Dusty Rose", hex: "#dcae96" },
+    { name: "Emerald", hex: "#50C878" },
+  ];
 
   const deviceWidths = {
     desktop: "100%",
@@ -44,12 +92,101 @@ export default function EditorPage() {
   const handlePublish = () => {
     const url = `undangan.id/${websiteData.coupleName.toLowerCase().replace(/\s+/g, '-')}`;
     setPublishedUrl(url);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 3000);
     console.log('Publishing website...', url);
   };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`https://${publishedUrl}`);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
     console.log('Link copied!');
+  };
+
+  const handleDownloadQR = () => {
+    console.log('Download QR code');
+  };
+
+  const handlePreview = () => {
+    window.open(`https://${publishedUrl}`, '_blank');
+    console.log('Opening preview in new window');
+  };
+
+  const handleSocialShare = (platform: string) => {
+    const url = `https://${publishedUrl}`;
+    const text = `Anda diundang ke pernikahan ${websiteData.coupleName}! `;
+    
+    let shareUrl = '';
+    switch (platform) {
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + url)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        break;
+      case 'email':
+        shareUrl = `mailto:?subject=${encodeURIComponent(`Undangan - ${websiteData.coupleName}`)}&body=${encodeURIComponent(text + url)}`;
+        break;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank');
+    }
+    console.log(`Sharing on ${platform}:`, url);
+  };
+
+  const handleSelectAsset = (assetId: string) => {
+    console.log('Selected asset:', assetId);
+  };
+
+  const addGalleryPhoto = () => {
+    const newPhoto: GalleryPhoto = {
+      id: Date.now().toString(),
+      url: "https://via.placeholder.com/400x300",
+      caption: "Photo caption"
+    };
+    setWebsiteData({ ...websiteData, galleryPhotos: [...websiteData.galleryPhotos, newPhoto] });
+  };
+
+  const removeGalleryPhoto = (id: string) => {
+    setWebsiteData({
+      ...websiteData,
+      galleryPhotos: websiteData.galleryPhotos.filter(photo => photo.id !== id)
+    });
+  };
+
+  const addTestimonial = () => {
+    const newTestimonial: Testimonial = {
+      id: Date.now().toString(),
+      name: "",
+      message: "",
+      relationship: ""
+    };
+    setWebsiteData({ ...websiteData, testimonials: [...websiteData.testimonials, newTestimonial] });
+  };
+
+  const removeTestimonial = (id: string) => {
+    setWebsiteData({
+      ...websiteData,
+      testimonials: websiteData.testimonials.filter(t => t.id !== id)
+    });
+  };
+
+  const updateTestimonial = (id: string, field: keyof Testimonial, value: string) => {
+    setWebsiteData({
+      ...websiteData,
+      testimonials: websiteData.testimonials.map(t =>
+        t.id === id ? { ...t, [field]: value } : t
+      )
+    });
+  };
+
+  const toggleSectionVisibility = (section: keyof typeof sectionVisibility) => {
+    setSectionVisibility({ ...sectionVisibility, [section]: !sectionVisibility[section] });
   };
 
   return (
@@ -57,7 +194,7 @@ export default function EditorPage() {
       <nav className="border-b border-border h-16 flex-shrink-0 backdrop-blur-lg bg-background/80 sticky top-0 z-50">
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/templates" className="font-serif text-xl font-semibold hover-elevate rounded-md px-2 -ml-2" data-testid="link-home">
+            <Link href="/" className="font-serif text-xl font-semibold hover-elevate rounded-md px-2 -ml-2" data-testid="link-home">
               konDangan.id
             </Link>
             <div className="h-6 w-px bg-border" />
@@ -65,6 +202,17 @@ export default function EditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button variant="ghost" asChild data-testid="button-dashboard">
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setAssetLibraryOpen(true)}
+              data-testid="button-asset-library"
+            >
+              <Shapes className="w-4 h-4 mr-2" />
+              Asset Library
+            </Button>
             <div className="flex items-center gap-1 mr-2">
               <Button 
                 variant={device === "desktop" ? "secondary" : "ghost"} 
@@ -108,17 +256,32 @@ export default function EditorPage() {
 
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-80 border-r border-border overflow-hidden flex-shrink-0 flex flex-col">
-          <Tabs defaultValue="hero" className="flex-1 flex flex-col">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
             <div className="border-b border-border px-4 py-3">
-              <TabsList className="w-full grid grid-cols-3">
-                <TabsTrigger value="hero" data-testid="tab-hero">
+              <TabsList className="w-full grid grid-cols-6 h-auto">
+                <TabsTrigger value="hero" data-testid="tab-hero" className="flex flex-col gap-1 py-2">
                   <Home className="w-4 h-4" />
+                  <span className="text-xs">Hero</span>
                 </TabsTrigger>
-                <TabsTrigger value="story" data-testid="tab-story">
+                <TabsTrigger value="story" data-testid="tab-story" className="flex flex-col gap-1 py-2">
                   <FileText className="w-4 h-4" />
+                  <span className="text-xs">Story</span>
                 </TabsTrigger>
-                <TabsTrigger value="event" data-testid="tab-event">
+                <TabsTrigger value="event" data-testid="tab-event" className="flex flex-col gap-1 py-2">
                   <Calendar className="w-4 h-4" />
+                  <span className="text-xs">Event</span>
+                </TabsTrigger>
+                <TabsTrigger value="gallery" data-testid="tab-gallery" className="flex flex-col gap-1 py-2">
+                  <Image className="w-4 h-4" />
+                  <span className="text-xs">Gallery</span>
+                </TabsTrigger>
+                <TabsTrigger value="giftRegistry" data-testid="tab-gift-registry" className="flex flex-col gap-1 py-2">
+                  <Gift className="w-4 h-4" />
+                  <span className="text-xs">Gift</span>
+                </TabsTrigger>
+                <TabsTrigger value="testimonials" data-testid="tab-testimonials" className="flex flex-col gap-1 py-2">
+                  <MessageSquare className="w-4 h-4" />
+                  <span className="text-xs">Testimoni</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -127,11 +290,22 @@ export default function EditorPage() {
               <div className="p-6">
                 <TabsContent value="hero" className="mt-0">
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
                         <Home className="w-4 h-4" />
                         Hero Section
                       </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-hero" className="text-xs text-muted-foreground">
+                          {sectionVisibility.hero ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-hero"
+                          checked={sectionVisibility.hero}
+                          onCheckedChange={() => toggleSectionVisibility('hero')}
+                          data-testid="toggle-visibility-hero"
+                        />
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="couple-name" className="text-sm font-medium mb-2 block">Nama Pasangan</Label>
@@ -153,7 +327,7 @@ export default function EditorPage() {
                     </div>
                     <div>
                       <Label htmlFor="primary-color" className="text-sm font-medium mb-2 block">Warna Utama</Label>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mb-3">
                         <Input
                           id="primary-color"
                           type="color"
@@ -168,6 +342,24 @@ export default function EditorPage() {
                           className="flex-1"
                           data-testid="input-primary-color-hex"
                         />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block">Popular Wedding Colors</Label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {weddingColors.map((color) => (
+                            <button
+                              key={color.hex}
+                              className="w-full aspect-square rounded-lg border-2 transition-all hover:scale-110"
+                              style={{ 
+                                backgroundColor: color.hex,
+                                borderColor: websiteData.primaryColor === color.hex ? '#000' : 'transparent'
+                              }}
+                              onClick={() => setWebsiteData({ ...websiteData, primaryColor: color.hex })}
+                              title={color.name}
+                              data-testid={`color-preset-${color.name.toLowerCase().replace(/\s+/g, '-')}`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <div>
@@ -190,11 +382,22 @@ export default function EditorPage() {
 
                 <TabsContent value="story" className="mt-0">
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
                         <FileText className="w-4 h-4" />
                         Cerita Kami
                       </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-story" className="text-xs text-muted-foreground">
+                          {sectionVisibility.story ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-story"
+                          checked={sectionVisibility.story}
+                          onCheckedChange={() => toggleSectionVisibility('story')}
+                          data-testid="toggle-visibility-story"
+                        />
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="groom-name" className="text-sm font-medium mb-2 block">Nama Mempelai Pria</Label>
@@ -236,11 +439,22 @@ export default function EditorPage() {
 
                 <TabsContent value="event" className="mt-0">
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         Detail Acara
                       </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-event" className="text-xs text-muted-foreground">
+                          {sectionVisibility.event ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-event"
+                          checked={sectionVisibility.event}
+                          onCheckedChange={() => toggleSectionVisibility('event')}
+                          data-testid="toggle-visibility-event"
+                        />
+                      </div>
                     </div>
                     <div className="border-b border-border pb-6">
                       <h4 className="font-medium mb-4">Akad Nikah</h4>
@@ -290,6 +504,207 @@ export default function EditorPage() {
                     </div>
                   </div>
                 </TabsContent>
+
+                <TabsContent value="gallery" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Image className="w-4 h-4" />
+                        Photo Gallery
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-gallery" className="text-xs text-muted-foreground">
+                          {sectionVisibility.gallery ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-gallery"
+                          checked={sectionVisibility.gallery}
+                          onCheckedChange={() => toggleSectionVisibility('gallery')}
+                          data-testid="toggle-visibility-gallery"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        onClick={addGalleryPhoto}
+                        data-testid="button-add-gallery-photo"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Upload Photo
+                      </Button>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Photos ({websiteData.galleryPhotos.length})</Label>
+                      {websiteData.galleryPhotos.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground text-sm" data-testid="text-no-gallery-photos">
+                          No photos yet. Click "Upload Photo" to add.
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          {websiteData.galleryPhotos.map((photo) => (
+                            <div 
+                              key={photo.id} 
+                              className="relative group aspect-square rounded-lg overflow-hidden border border-border"
+                              data-testid={`gallery-photo-${photo.id}`}
+                            >
+                              <img 
+                                src={photo.url} 
+                                alt={photo.caption || "Gallery photo"}
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                onClick={() => removeGalleryPhoto(photo.id)}
+                                className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                data-testid={`button-remove-gallery-photo-${photo.id}`}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="giftRegistry" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Gift className="w-4 h-4" />
+                        Gift Registry
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-gift-registry" className="text-xs text-muted-foreground">
+                          {sectionVisibility.giftRegistry ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-gift-registry"
+                          checked={sectionVisibility.giftRegistry}
+                          onCheckedChange={() => toggleSectionVisibility('giftRegistry')}
+                          data-testid="toggle-visibility-gift-registry"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="bank-name" className="text-sm font-medium mb-2 block">Bank Name</Label>
+                      <Input
+                        id="bank-name"
+                        value={websiteData.bankName}
+                        onChange={(e) => setWebsiteData({ ...websiteData, bankName: e.target.value })}
+                        placeholder="e.g., Bank Mandiri"
+                        data-testid="input-bank-name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="account-number" className="text-sm font-medium mb-2 block">Account Number</Label>
+                      <Input
+                        id="account-number"
+                        value={websiteData.accountNumber}
+                        onChange={(e) => setWebsiteData({ ...websiteData, accountNumber: e.target.value })}
+                        placeholder="e.g., 1234567890"
+                        data-testid="input-account-number"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="account-holder-name" className="text-sm font-medium mb-2 block">Account Holder Name</Label>
+                      <Input
+                        id="account-holder-name"
+                        value={websiteData.accountHolderName}
+                        onChange={(e) => setWebsiteData({ ...websiteData, accountHolderName: e.target.value })}
+                        placeholder="e.g., Sarah & Ahmad"
+                        data-testid="input-account-holder-name"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="testimonials" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4" />
+                        Testimonials
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-testimonials" className="text-xs text-muted-foreground">
+                          {sectionVisibility.testimonials ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-testimonials"
+                          checked={sectionVisibility.testimonials}
+                          onCheckedChange={() => toggleSectionVisibility('testimonials')}
+                          data-testid="toggle-visibility-testimonials"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        onClick={addTestimonial}
+                        data-testid="button-add-testimonial"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Testimonial
+                      </Button>
+                    </div>
+                    <div className="space-y-4">
+                      {websiteData.testimonials.map((testimonial, index) => (
+                        <div 
+                          key={testimonial.id} 
+                          className="border border-border rounded-lg p-4 space-y-3"
+                          data-testid={`testimonial-${testimonial.id}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium">Testimonial {index + 1}</Label>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeTestimonial(testimonial.id)}
+                              data-testid={`button-remove-testimonial-${testimonial.id}`}
+                            >
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </div>
+                          <div>
+                            <Label htmlFor={`testimonial-name-${testimonial.id}`} className="text-xs text-muted-foreground mb-1 block">Name</Label>
+                            <Input
+                              id={`testimonial-name-${testimonial.id}`}
+                              value={testimonial.name}
+                              onChange={(e) => updateTestimonial(testimonial.id, 'name', e.target.value)}
+                              placeholder="Guest name"
+                              data-testid={`input-testimonial-name-${testimonial.id}`}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`testimonial-relationship-${testimonial.id}`} className="text-xs text-muted-foreground mb-1 block">Relationship</Label>
+                            <Input
+                              id={`testimonial-relationship-${testimonial.id}`}
+                              value={testimonial.relationship}
+                              onChange={(e) => updateTestimonial(testimonial.id, 'relationship', e.target.value)}
+                              placeholder="e.g., Friend, Family"
+                              data-testid={`input-testimonial-relationship-${testimonial.id}`}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`testimonial-message-${testimonial.id}`} className="text-xs text-muted-foreground mb-1 block">Message</Label>
+                            <Textarea
+                              id={`testimonial-message-${testimonial.id}`}
+                              value={testimonial.message}
+                              onChange={(e) => updateTestimonial(testimonial.id, 'message', e.target.value)}
+                              placeholder="Testimonial message"
+                              className="min-h-[80px]"
+                              data-testid={`textarea-testimonial-message-${testimonial.id}`}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
               </div>
             </ScrollArea>
           </Tabs>
@@ -308,19 +723,186 @@ export default function EditorPage() {
             </ScrollArea>
           </div>
         </main>
+
+        <aside className="w-80 border-l border-border overflow-hidden flex-shrink-0 flex flex-col bg-muted/10">
+          <div className="border-b border-border px-4 py-3">
+            <h3 className="font-semibold text-sm">Design Options</h3>
+          </div>
+          <ScrollArea className="flex-1">
+            <div className="p-6 space-y-6">
+              {activeTab === "hero" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Section Layout</Label>
+                    <Select defaultValue="centered">
+                      <SelectTrigger data-testid="select-hero-layout">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="centered">Centered</SelectItem>
+                        <SelectItem value="left">Left Aligned</SelectItem>
+                        <SelectItem value="right">Right Aligned</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Background Style</Label>
+                    <Select defaultValue="image">
+                      <SelectTrigger data-testid="select-hero-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="image">Image</SelectItem>
+                        <SelectItem value="gradient">Gradient</SelectItem>
+                        <SelectItem value="solid">Solid Color</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {activeTab === "story" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Text Alignment</Label>
+                    <Select defaultValue="center">
+                      <SelectTrigger data-testid="select-story-alignment">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="left">Left</SelectItem>
+                        <SelectItem value="center">Center</SelectItem>
+                        <SelectItem value="right">Right</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Image Position</Label>
+                    <Select defaultValue="top">
+                      <SelectTrigger data-testid="select-story-image-position">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="top">Top</SelectItem>
+                        <SelectItem value="side">Side</SelectItem>
+                        <SelectItem value="background">Background</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {activeTab === "event" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Layout Style</Label>
+                    <Select defaultValue="two-column">
+                      <SelectTrigger data-testid="select-event-layout">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="two-column">Two Column</SelectItem>
+                        <SelectItem value="stacked">Stacked</SelectItem>
+                        <SelectItem value="timeline">Timeline</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {activeTab === "gallery" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Grid Columns</Label>
+                    <Select defaultValue="3">
+                      <SelectTrigger data-testid="select-gallery-columns">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2">2 Columns</SelectItem>
+                        <SelectItem value="3">3 Columns</SelectItem>
+                        <SelectItem value="4">4 Columns</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Spacing</Label>
+                    <Select defaultValue="medium">
+                      <SelectTrigger data-testid="select-gallery-spacing">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="small">Small</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="large">Large</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {activeTab === "giftRegistry" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Card Style</Label>
+                    <Select defaultValue="elegant">
+                      <SelectTrigger data-testid="select-gift-card-style">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="elegant">Elegant</SelectItem>
+                        <SelectItem value="modern">Modern</SelectItem>
+                        <SelectItem value="simple">Simple</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {activeTab === "testimonials" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Display Style</Label>
+                    <Select defaultValue="cards">
+                      <SelectTrigger data-testid="select-testimonials-style">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cards">Cards</SelectItem>
+                        <SelectItem value="carousel">Carousel</SelectItem>
+                        <SelectItem value="grid">Grid</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              <div className="pt-4 border-t border-border">
+                <p className="text-xs text-muted-foreground text-center">
+                  Design options for {activeTab} section
+                </p>
+              </div>
+            </div>
+          </ScrollArea>
+        </aside>
       </div>
 
+      <AssetLibraryModal 
+        open={assetLibraryOpen} 
+        onOpenChange={setAssetLibraryOpen}
+        onSelectAsset={handleSelectAsset}
+      />
+
       <Dialog open={publishModalOpen} onOpenChange={setPublishModalOpen}>
-        <DialogContent data-testid="dialog-publish">
+        <DialogContent className="max-w-3xl" data-testid="dialog-publish">
           <DialogHeader>
-            <DialogTitle>Publikasikan Website Undangan</DialogTitle>
+            <DialogTitle className="flex items-center gap-2 text-2xl">
+              {publishedUrl && <Check className="w-6 h-6 text-green-500" />}
+              {publishedUrl ? "Website Berhasil Dipublikasikan! 🎉" : "Publikasikan Website Undangan"}
+            </DialogTitle>
             <DialogDescription>
-              Website undangan Anda siap dipublikasikan. Bagikan link ini kepada tamu undangan.
+              {publishedUrl 
+                ? "Bagikan website undangan Anda kepada tamu melalui link atau QR code di bawah ini."
+                : "Website undangan Anda siap dipublikasikan. Bagikan link ini kepada tamu undangan."}
             </DialogDescription>
           </DialogHeader>
           
           {!publishedUrl ? (
-            <div className="space-y-4 py-4">
+            <div className="space-y-6 py-4">
               <div>
                 <Label htmlFor="website-url" className="text-sm font-medium mb-2 block">URL Website</Label>
                 <div className="flex gap-2">
@@ -328,35 +910,147 @@ export default function EditorPage() {
                     id="website-url"
                     value={`undangan.id/${websiteData.coupleName.toLowerCase().replace(/\s+/g, '-')}`}
                     readOnly
-                    className="flex-1"
+                    className="flex-1 font-mono"
                     data-testid="input-website-url"
                   />
                 </div>
               </div>
               <Button 
-                className="w-full" 
+                className="w-full h-12 text-base" 
                 onClick={handlePublish}
                 data-testid="button-confirm-publish"
               >
-                <Share2 className="w-4 h-4 mr-2" />
+                <Share2 className="w-5 h-5 mr-2" />
                 Publikasikan Sekarang
               </Button>
             </div>
           ) : (
-            <div className="space-y-4 py-4">
-              <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground mb-2">Website Anda telah dipublikasikan!</p>
-                <p className="font-mono font-semibold text-primary" data-testid="text-published-url">
-                  {publishedUrl}
-                </p>
+            <div className="space-y-6 py-4">
+              {showConfetti && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50" data-testid="confetti-animation">
+                  <div className="animate-bounce">
+                    <Sparkles className="w-16 h-16 text-yellow-500" />
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Link Website</Label>
+                    <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border-2 border-primary/20">
+                      <p className="font-mono text-sm font-semibold text-primary break-all mb-3" data-testid="text-published-url">
+                        https://{publishedUrl}
+                      </p>
+                      <Button 
+                        className="w-full" 
+                        onClick={handleCopyLink}
+                        variant={linkCopied ? "secondary" : "default"}
+                        data-testid="button-copy-link"
+                      >
+                        {linkCopied ? (
+                          <>
+                            <Check className="w-4 h-4 mr-2" />
+                            Link Tersalin!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4 mr-2" />
+                            Salin Link
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Aksi Cepat</Label>
+                    <Button 
+                      className="w-full" 
+                      variant="outline"
+                      onClick={handlePreview}
+                      data-testid="button-preview"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Lihat Preview
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">QR Code</Label>
+                    <div className="p-6 bg-white rounded-xl border-2 border-border flex flex-col items-center gap-4">
+                      <div 
+                        className="w-48 h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-4 border-gray-300 relative overflow-hidden"
+                        data-testid="qr-code-placeholder"
+                      >
+                        <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 p-4 gap-1">
+                          {Array.from({ length: 64 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className={`rounded-sm ${
+                                Math.random() > 0.5 ? 'bg-black' : 'bg-white'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={handleDownloadQR}
+                        data-testid="button-download-qr"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download QR Code
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Button 
-                className="w-full" 
-                onClick={handleCopyLink}
-                data-testid="button-copy-link"
-              >
-                Salin Link
-              </Button>
+
+              <div className="border-t border-border pt-6">
+                <Label className="text-sm font-medium mb-3 block">Bagikan ke Media Sosial</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Button
+                    variant="outline"
+                    className="h-12 flex items-center justify-center gap-2 hover:bg-green-50 hover:border-green-500 hover:text-green-600 transition-colors"
+                    onClick={() => handleSocialShare('whatsapp')}
+                    data-testid="button-share-whatsapp"
+                  >
+                    <FaWhatsapp className="w-5 h-5" />
+                    <span className="font-medium">WhatsApp</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-12 flex items-center justify-center gap-2 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                    onClick={() => handleSocialShare('facebook')}
+                    data-testid="button-share-facebook"
+                  >
+                    <FaFacebook className="w-5 h-5" />
+                    <span className="font-medium">Facebook</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-12 flex items-center justify-center gap-2 hover:bg-sky-50 hover:border-sky-500 hover:text-sky-600 transition-colors"
+                    onClick={() => handleSocialShare('twitter')}
+                    data-testid="button-share-twitter"
+                  >
+                    <FaTwitter className="w-5 h-5" />
+                    <span className="font-medium">Twitter</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-12 flex items-center justify-center gap-2 hover:bg-purple-50 hover:border-purple-500 hover:text-purple-600 transition-colors"
+                    onClick={() => handleSocialShare('email')}
+                    data-testid="button-share-email"
+                  >
+                    <MdEmail className="w-5 h-5" />
+                    <span className="font-medium">Email</span>
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </DialogContent>

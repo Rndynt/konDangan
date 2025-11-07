@@ -41,6 +41,9 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16">
             <div className="font-serif text-xl font-semibold">konDangan.id</div>
             <div className="flex items-center gap-4">
+              <Button variant="ghost" asChild data-testid="button-dashboard">
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
               <Button variant="ghost" asChild data-testid="button-lihat-contoh">
                 <Link href="/templates">Lihat Contoh</Link>
               </Button>
@@ -52,7 +55,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden" data-testid="section-hero">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
@@ -61,10 +64,10 @@ export default function HomePage() {
         </div>
         
         <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight" data-testid="heading-hero">
             Buat Website Undangan yang Memukau
           </h1>
-          <p className="text-xl text-white/90 mb-8 leading-relaxed">
+          <p className="text-xl text-white/90 mb-8 leading-relaxed" data-testid="text-hero-subtitle">
             Template elegant, customize mudah, bagikan instan
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -87,8 +90,8 @@ export default function HomePage() {
       <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-4">Template yang Memukau</h2>
-            <p className="text-lg text-muted-foreground">Pilih dari koleksi template website undangan kami</p>
+            <h2 className="text-3xl md:text-4xl font-semibold mb-4" data-testid="heading-templates-section">Template yang Memukau</h2>
+            <p className="text-lg text-muted-foreground" data-testid="text-templates-description">Pilih dari koleksi template website undangan kami</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -100,10 +103,11 @@ export default function HomePage() {
                       src={template.image} 
                       alt={template.category}
                       className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                      data-testid={`img-template-${template.id}`}
                     />
                   </div>
                   <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground">{template.category}</p>
+                    <p className="text-sm text-muted-foreground" data-testid={`text-template-category-${template.id}`}>{template.category}</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -126,11 +130,11 @@ export default function HomePage() {
               return (
                 <Card key={index} data-testid={`card-feature-${index}`}>
                   <CardContent className="p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6" data-testid={`icon-feature-${index}`}>
                       <Icon className="w-8 h-8 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                    <h3 className="text-xl font-semibold mb-4" data-testid={`heading-feature-${index}`}>{feature.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed" data-testid={`text-feature-description-${index}`}>{feature.description}</p>
                   </CardContent>
                 </Card>
               );
