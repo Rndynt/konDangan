@@ -28,10 +28,10 @@ export default function HomePage() {
   ];
 
   const templates = [
-    { id: "elegant-pink", image: weddingPink, category: "Pernikahan" },
-    { id: "luxury-navy", image: weddingNavy, category: "Pernikahan" },
-    { id: "birthday-fun", image: birthdayFun, category: "Ulang Tahun" },
-    { id: "corporate", image: corporateEvent, category: "Acara Formal" },
+    { id: "golden-luxury", image: weddingNavy, category: "Pernikahan" },
+    { id: "rustic-charm", image: weddingPink, category: "Pernikahan" },
+    { id: "kids-birthday-bash", image: birthdayFun, category: "Ulang Tahun" },
+    { id: "corporate-gala", image: corporateEvent, category: "Acara Formal" },
   ];
 
   return (

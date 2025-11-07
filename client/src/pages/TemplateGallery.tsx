@@ -165,11 +165,143 @@ const templates: Template[] = [
     dateAdded: "2024-10-26",
     screenshots: [proposalMoment, couplePortrait, weddingVenue]
   },
+  { 
+    id: "rustic-charm", 
+    title: "Rustic Charm", 
+    category: "Pernikahan", 
+    style: "Rustic",
+    colorScheme: "Brown",
+    imageUrl: weddingVenue,
+    popularity: 84,
+    dateAdded: "2024-11-06",
+    screenshots: [weddingVenue, watercolorFloral, couplePortrait]
+  },
+  { 
+    id: "golden-luxury", 
+    title: "Golden Luxury", 
+    category: "Pernikahan", 
+    style: "Luxury",
+    colorScheme: "Gold",
+    imageUrl: weddingNavy,
+    popularity: 94,
+    dateAdded: "2024-11-07",
+    screenshots: [weddingNavy, couplePortrait, proposalMoment]
+  },
+  { 
+    id: "beach-wedding", 
+    title: "Beach Wedding", 
+    category: "Pernikahan", 
+    style: "Modern",
+    colorScheme: "Teal",
+    imageUrl: proposalMoment,
+    popularity: 88,
+    dateAdded: "2024-11-06",
+    screenshots: [proposalMoment, weddingVenue, couplePortrait]
+  },
+  { 
+    id: "royal-purple", 
+    title: "Royal Purple", 
+    category: "Pernikahan", 
+    style: "Classic",
+    colorScheme: "Purple",
+    imageUrl: weddingFloral,
+    popularity: 91,
+    dateAdded: "2024-11-05",
+    screenshots: [weddingFloral, watercolorFloral, couplePortrait]
+  },
+  { 
+    id: "minimalist-white", 
+    title: "Minimalist White", 
+    category: "Pernikahan", 
+    style: "Minimalis",
+    colorScheme: "White",
+    imageUrl: weddingGeometric,
+    popularity: 86,
+    dateAdded: "2024-11-04",
+    screenshots: [weddingGeometric, couplePortrait]
+  },
+  { 
+    id: "bohemian-dream", 
+    title: "Bohemian Dream", 
+    category: "Pernikahan", 
+    style: "Boho",
+    colorScheme: "Pastel",
+    imageUrl: watercolorFloral,
+    popularity: 85,
+    dateAdded: "2024-11-03",
+    screenshots: [watercolorFloral, weddingVenue, couplePortrait]
+  },
+  { 
+    id: "art-deco-glam", 
+    title: "Art Deco Glam", 
+    category: "Pernikahan", 
+    style: "Luxury",
+    colorScheme: "Pink",
+    imageUrl: weddingPink,
+    popularity: 92,
+    dateAdded: "2024-11-07",
+    screenshots: [weddingPink, couplePortrait, proposalMoment]
+  },
+  { 
+    id: "kids-birthday-bash", 
+    title: "Kids Birthday Bash", 
+    category: "Ulang Tahun", 
+    style: "Modern",
+    colorScheme: "Rainbow",
+    imageUrl: birthdayFun,
+    popularity: 83,
+    dateAdded: "2024-11-02",
+    screenshots: [birthdayFun, birthdayMinimalist]
+  },
+  { 
+    id: "sweet-sixteen", 
+    title: "Sweet Sixteen", 
+    category: "Ulang Tahun", 
+    style: "Elegant",
+    colorScheme: "Pink",
+    imageUrl: weddingPink,
+    popularity: 87,
+    dateAdded: "2024-11-01",
+    screenshots: [weddingPink, birthdayFun]
+  },
+  { 
+    id: "corporate-gala", 
+    title: "Corporate Gala", 
+    category: "Acara Formal", 
+    style: "Luxury",
+    colorScheme: "Silver",
+    imageUrl: formalInvitation,
+    popularity: 89,
+    dateAdded: "2024-11-06",
+    screenshots: [formalInvitation, corporateEvent]
+  },
+  { 
+    id: "graduation-party", 
+    title: "Graduation Party", 
+    category: "Acara Formal", 
+    style: "Modern",
+    colorScheme: "Bold",
+    imageUrl: corporateEvent,
+    popularity: 81,
+    dateAdded: "2024-10-31",
+    screenshots: [corporateEvent, formalInvitation]
+  },
+  { 
+    id: "baby-shower", 
+    title: "Baby Shower", 
+    category: "Acara Spesial", 
+    style: "Elegant",
+    colorScheme: "Blue",
+    imageUrl: watercolorFloral,
+    popularity: 90,
+    dateAdded: "2024-11-05",
+    screenshots: [watercolorFloral, weddingFloral]
+  },
 ];
 
-const categories = ["Semua", "Pernikahan", "Ulang Tahun", "Acara Formal"];
-const styles = ["Semua", "Elegant", "Modern", "Minimalis", "Vintage", "Classic"];
-const colorSchemes = ["Semua", "Pastel", "Bold", "Neutral", "Navy", "Pink"];
+const categories = ["Semua", "Pernikahan", "Ulang Tahun", "Acara Formal", "Acara Spesial"];
+const styles = ["Semua", "Elegant", "Modern", "Minimalis", "Vintage", "Classic", "Rustic", "Luxury", "Boho"];
+const colorSchemes = ["Semua", "Pastel", "Bold", "Neutral", "Navy", "Pink", "Gold", "Purple", "Teal", "White", "Brown", "Rainbow", "Silver", "Blue"];
 const sortOptions = [
   { value: "terbaru", label: "Terbaru" },
   { value: "terpopuler", label: "Terpopuler" },
