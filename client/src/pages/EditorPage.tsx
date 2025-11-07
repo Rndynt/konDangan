@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Monitor, Tablet, Smartphone, Eye, Save, Share2, Home, FileText, Image, Calendar, Users, Mail, Gift, MessageSquare, Shapes, Plus, Trash2, EyeOff, Download, ExternalLink, Check, Sparkles, Copy } from "lucide-react";
+import { Monitor, Tablet, Smartphone, Eye, Save, Share2, Home, FileText, Image, Calendar, Users, Mail, Gift, MessageSquare, Shapes, Plus, Trash2, EyeOff, Download, ExternalLink, Check, Sparkles, Copy, Music2, Search, Timer, Wand2, Instagram, Facebook, Twitter } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaTwitter } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import WebsitePreview from "@/components/WebsitePreview";
@@ -59,6 +59,24 @@ export default function EditorPage() {
     testimonials: [
       { id: "1", name: "Rina Wijaya", message: "Pasangan yang sempurna! Semoga langgeng hingga akhir hayat.", relationship: "Sahabat" }
     ] as Testimonial[],
+    rsvpDeadline: "20 Desember 2025",
+    rsvpConfirmationMessage: "Terima kasih atas konfirmasi kehadiran Anda!",
+    backgroundMusicUrl: "",
+    musicAutoplay: false,
+    musicVolume: 50,
+    pageTitle: "Undangan Pernikahan Sarah & Ahmad",
+    metaDescription: "Kami mengundang Anda untuk merayakan pernikahan kami",
+    ogImage: "",
+    ogDescription: "Bergabunglah dengan kami di hari istimewa kami",
+    showCountdown: true,
+    countdownStyle: "elegant",
+    countdownText: "Menuju Hari Bahagia",
+    customSpacing: "normal",
+    enableAnimations: true,
+    customCSS: "",
+    facebookUrl: "",
+    instagramUrl: "",
+    twitterUrl: "",
   });
 
   const [sectionVisibility, setSectionVisibility] = useState({
@@ -68,6 +86,12 @@ export default function EditorPage() {
     gallery: true,
     giftRegistry: true,
     testimonials: true,
+    rsvp: true,
+    music: true,
+    seo: true,
+    countdown: true,
+    design: true,
+    social: true,
   });
 
   const fonts = ["Inter", "Playfair Display", "Poppins", "Lora", "Montserrat", "Cormorant Garamond"];
@@ -257,34 +281,58 @@ export default function EditorPage() {
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-80 border-r border-border overflow-hidden flex-shrink-0 flex flex-col">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-            <div className="border-b border-border px-4 py-3">
-              <TabsList className="w-full grid grid-cols-6 h-auto">
-                <TabsTrigger value="hero" data-testid="tab-hero" className="flex flex-col gap-1 py-2">
+            <ScrollArea className="border-b border-border">
+              <TabsList className="w-full inline-flex h-auto p-4 gap-1">
+                <TabsTrigger value="hero" data-testid="tab-hero" className="flex flex-col gap-1 py-2 px-3">
                   <Home className="w-4 h-4" />
                   <span className="text-xs">Hero</span>
                 </TabsTrigger>
-                <TabsTrigger value="story" data-testid="tab-story" className="flex flex-col gap-1 py-2">
+                <TabsTrigger value="story" data-testid="tab-story" className="flex flex-col gap-1 py-2 px-3">
                   <FileText className="w-4 h-4" />
                   <span className="text-xs">Story</span>
                 </TabsTrigger>
-                <TabsTrigger value="event" data-testid="tab-event" className="flex flex-col gap-1 py-2">
+                <TabsTrigger value="event" data-testid="tab-event" className="flex flex-col gap-1 py-2 px-3">
                   <Calendar className="w-4 h-4" />
                   <span className="text-xs">Event</span>
                 </TabsTrigger>
-                <TabsTrigger value="gallery" data-testid="tab-gallery" className="flex flex-col gap-1 py-2">
+                <TabsTrigger value="gallery" data-testid="tab-gallery" className="flex flex-col gap-1 py-2 px-3">
                   <Image className="w-4 h-4" />
                   <span className="text-xs">Gallery</span>
                 </TabsTrigger>
-                <TabsTrigger value="giftRegistry" data-testid="tab-gift-registry" className="flex flex-col gap-1 py-2">
+                <TabsTrigger value="giftRegistry" data-testid="tab-gift-registry" className="flex flex-col gap-1 py-2 px-3">
                   <Gift className="w-4 h-4" />
                   <span className="text-xs">Gift</span>
                 </TabsTrigger>
-                <TabsTrigger value="testimonials" data-testid="tab-testimonials" className="flex flex-col gap-1 py-2">
+                <TabsTrigger value="testimonials" data-testid="tab-testimonials" className="flex flex-col gap-1 py-2 px-3">
                   <MessageSquare className="w-4 h-4" />
                   <span className="text-xs">Testimoni</span>
                 </TabsTrigger>
+                <TabsTrigger value="rsvp" data-testid="tab-rsvp" className="flex flex-col gap-1 py-2 px-3">
+                  <Mail className="w-4 h-4" />
+                  <span className="text-xs">RSVP</span>
+                </TabsTrigger>
+                <TabsTrigger value="music" data-testid="tab-music" className="flex flex-col gap-1 py-2 px-3">
+                  <Music2 className="w-4 h-4" />
+                  <span className="text-xs">Music</span>
+                </TabsTrigger>
+                <TabsTrigger value="seo" data-testid="tab-seo" className="flex flex-col gap-1 py-2 px-3">
+                  <Search className="w-4 h-4" />
+                  <span className="text-xs">SEO</span>
+                </TabsTrigger>
+                <TabsTrigger value="countdown" data-testid="tab-countdown" className="flex flex-col gap-1 py-2 px-3">
+                  <Timer className="w-4 h-4" />
+                  <span className="text-xs">Countdown</span>
+                </TabsTrigger>
+                <TabsTrigger value="design" data-testid="tab-design" className="flex flex-col gap-1 py-2 px-3">
+                  <Wand2 className="w-4 h-4" />
+                  <span className="text-xs">Design</span>
+                </TabsTrigger>
+                <TabsTrigger value="social" data-testid="tab-social" className="flex flex-col gap-1 py-2 px-3">
+                  <Share2 className="w-4 h-4" />
+                  <span className="text-xs">Social</span>
+                </TabsTrigger>
               </TabsList>
-            </div>
+            </ScrollArea>
 
             <ScrollArea className="flex-1">
               <div className="p-6">
@@ -702,6 +750,431 @@ export default function EditorPage() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="rsvp" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        RSVP Settings
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-rsvp" className="text-xs text-muted-foreground">
+                          {sectionVisibility.rsvp ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-rsvp"
+                          checked={sectionVisibility.rsvp}
+                          onCheckedChange={() => toggleSectionVisibility('rsvp')}
+                          data-testid="toggle-visibility-rsvp"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="rsvp-deadline" className="text-sm font-medium mb-2 block">RSVP Deadline</Label>
+                      <Input
+                        id="rsvp-deadline"
+                        value={websiteData.rsvpDeadline}
+                        onChange={(e) => setWebsiteData({ ...websiteData, rsvpDeadline: e.target.value })}
+                        placeholder="e.g., 20 Desember 2025"
+                        data-testid="input-rsvp-deadline"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="rsvp-confirmation-message" className="text-sm font-medium mb-2 block">Confirmation Message</Label>
+                      <Textarea
+                        id="rsvp-confirmation-message"
+                        value={websiteData.rsvpConfirmationMessage}
+                        onChange={(e) => setWebsiteData({ ...websiteData, rsvpConfirmationMessage: e.target.value })}
+                        placeholder="Thank you message after RSVP submission"
+                        className="min-h-[100px]"
+                        data-testid="textarea-rsvp-confirmation-message"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">RSVP Form Fields</Label>
+                      <p className="text-xs text-muted-foreground mb-3">Configure which fields to collect from guests</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="rsvp-field-name" className="text-sm">Guest Name</Label>
+                          <Switch id="rsvp-field-name" defaultChecked data-testid="toggle-rsvp-field-name" />
+                        </div>
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="rsvp-field-email" className="text-sm">Email Address</Label>
+                          <Switch id="rsvp-field-email" defaultChecked data-testid="toggle-rsvp-field-email" />
+                        </div>
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="rsvp-field-phone" className="text-sm">Phone Number</Label>
+                          <Switch id="rsvp-field-phone" data-testid="toggle-rsvp-field-phone" />
+                        </div>
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="rsvp-field-guests" className="text-sm">Number of Guests</Label>
+                          <Switch id="rsvp-field-guests" defaultChecked data-testid="toggle-rsvp-field-guests" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="music" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Music2 className="w-4 h-4" />
+                        Background Music
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-music" className="text-xs text-muted-foreground">
+                          {sectionVisibility.music ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-music"
+                          checked={sectionVisibility.music}
+                          onCheckedChange={() => toggleSectionVisibility('music')}
+                          data-testid="toggle-visibility-music"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="background-music-url" className="text-sm font-medium mb-2 block">Music URL</Label>
+                      <Input
+                        id="background-music-url"
+                        value={websiteData.backgroundMusicUrl}
+                        onChange={(e) => setWebsiteData({ ...websiteData, backgroundMusicUrl: e.target.value })}
+                        placeholder="https://example.com/music.mp3"
+                        data-testid="input-background-music-url"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">Enter the URL of your background music file</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Upload Music File</Label>
+                      <Button variant="outline" className="w-full" data-testid="button-upload-music">
+                        <Music2 className="w-4 h-4 mr-2" />
+                        Upload Audio File
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                      <div>
+                        <Label htmlFor="music-autoplay" className="text-sm font-medium">Autoplay</Label>
+                        <p className="text-xs text-muted-foreground">Play music automatically when page loads</p>
+                      </div>
+                      <Switch
+                        id="music-autoplay"
+                        checked={websiteData.musicAutoplay}
+                        onCheckedChange={(checked) => setWebsiteData({ ...websiteData, musicAutoplay: checked })}
+                        data-testid="toggle-music-autoplay"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="music-volume" className="text-sm font-medium mb-2 block">Volume: {websiteData.musicVolume}%</Label>
+                      <Input
+                        id="music-volume"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={websiteData.musicVolume}
+                        onChange={(e) => setWebsiteData({ ...websiteData, musicVolume: parseInt(e.target.value) })}
+                        className="w-full"
+                        data-testid="slider-music-volume"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="seo" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Search className="w-4 h-4" />
+                        SEO Settings
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-seo" className="text-xs text-muted-foreground">
+                          {sectionVisibility.seo ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-seo"
+                          checked={sectionVisibility.seo}
+                          onCheckedChange={() => toggleSectionVisibility('seo')}
+                          data-testid="toggle-visibility-seo"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="page-title" className="text-sm font-medium mb-2 block">Page Title</Label>
+                      <Input
+                        id="page-title"
+                        value={websiteData.pageTitle}
+                        onChange={(e) => setWebsiteData({ ...websiteData, pageTitle: e.target.value })}
+                        placeholder="e.g., Wedding of Sarah & Ahmad"
+                        data-testid="input-page-title"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">Appears in browser tabs and search results</p>
+                    </div>
+                    <div>
+                      <Label htmlFor="meta-description" className="text-sm font-medium mb-2 block">Meta Description</Label>
+                      <Textarea
+                        id="meta-description"
+                        value={websiteData.metaDescription}
+                        onChange={(e) => setWebsiteData({ ...websiteData, metaDescription: e.target.value })}
+                        placeholder="Brief description for search engines"
+                        className="min-h-[80px]"
+                        data-testid="textarea-meta-description"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">Recommended: 150-160 characters</p>
+                    </div>
+                    <div className="border-t border-border pt-4">
+                      <h4 className="font-medium mb-3">Open Graph Tags</h4>
+                      <p className="text-xs text-muted-foreground mb-3">Optimize how your website appears when shared on social media</p>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="og-description" className="text-sm font-medium mb-2 block">OG Description</Label>
+                          <Textarea
+                            id="og-description"
+                            value={websiteData.ogDescription}
+                            onChange={(e) => setWebsiteData({ ...websiteData, ogDescription: e.target.value })}
+                            placeholder="Description for social media shares"
+                            className="min-h-[60px]"
+                            data-testid="textarea-og-description"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="og-image" className="text-sm font-medium mb-2 block">OG Image URL</Label>
+                          <Input
+                            id="og-image"
+                            value={websiteData.ogImage}
+                            onChange={(e) => setWebsiteData({ ...websiteData, ogImage: e.target.value })}
+                            placeholder="https://example.com/image.jpg"
+                            data-testid="input-og-image"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="countdown" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Timer className="w-4 h-4" />
+                        Countdown Timer
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-countdown" className="text-xs text-muted-foreground">
+                          {sectionVisibility.countdown ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-countdown"
+                          checked={sectionVisibility.countdown}
+                          onCheckedChange={() => toggleSectionVisibility('countdown')}
+                          data-testid="toggle-visibility-countdown"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                      <div>
+                        <Label htmlFor="show-countdown" className="text-sm font-medium">Show Countdown</Label>
+                        <p className="text-xs text-muted-foreground">Display countdown timer on website</p>
+                      </div>
+                      <Switch
+                        id="show-countdown"
+                        checked={websiteData.showCountdown}
+                        onCheckedChange={(checked) => setWebsiteData({ ...websiteData, showCountdown: checked })}
+                        data-testid="toggle-show-countdown"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="countdown-text" className="text-sm font-medium mb-2 block">Countdown Text</Label>
+                      <Input
+                        id="countdown-text"
+                        value={websiteData.countdownText}
+                        onChange={(e) => setWebsiteData({ ...websiteData, countdownText: e.target.value })}
+                        placeholder="e.g., Counting down to our special day"
+                        data-testid="input-countdown-text"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="countdown-style" className="text-sm font-medium mb-2 block">Countdown Style</Label>
+                      <Select value={websiteData.countdownStyle} onValueChange={(value) => setWebsiteData({ ...websiteData, countdownStyle: value })}>
+                        <SelectTrigger id="countdown-style" data-testid="select-countdown-style">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="elegant">Elegant</SelectItem>
+                          <SelectItem value="modern">Modern</SelectItem>
+                          <SelectItem value="minimal">Minimal</SelectItem>
+                          <SelectItem value="classic">Classic</SelectItem>
+                          <SelectItem value="bold">Bold</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Preview</Label>
+                      <div className="p-6 border border-border rounded-lg bg-muted/20 text-center">
+                        <p className="text-sm text-muted-foreground mb-3">{websiteData.countdownText}</p>
+                        <div className="grid grid-cols-4 gap-2">
+                          <div className="p-3 bg-background rounded-lg">
+                            <div className="text-2xl font-bold">12</div>
+                            <div className="text-xs text-muted-foreground">Days</div>
+                          </div>
+                          <div className="p-3 bg-background rounded-lg">
+                            <div className="text-2xl font-bold">05</div>
+                            <div className="text-xs text-muted-foreground">Hours</div>
+                          </div>
+                          <div className="p-3 bg-background rounded-lg">
+                            <div className="text-2xl font-bold">30</div>
+                            <div className="text-xs text-muted-foreground">Min</div>
+                          </div>
+                          <div className="p-3 bg-background rounded-lg">
+                            <div className="text-2xl font-bold">45</div>
+                            <div className="text-xs text-muted-foreground">Sec</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="design" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Wand2 className="w-4 h-4" />
+                        Advanced Design
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-design" className="text-xs text-muted-foreground">
+                          {sectionVisibility.design ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-design"
+                          checked={sectionVisibility.design}
+                          onCheckedChange={() => toggleSectionVisibility('design')}
+                          data-testid="toggle-visibility-design"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="custom-spacing" className="text-sm font-medium mb-2 block">Section Spacing</Label>
+                      <Select value={websiteData.customSpacing} onValueChange={(value) => setWebsiteData({ ...websiteData, customSpacing: value })}>
+                        <SelectTrigger id="custom-spacing" data-testid="select-custom-spacing">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="compact">Compact</SelectItem>
+                          <SelectItem value="normal">Normal</SelectItem>
+                          <SelectItem value="relaxed">Relaxed</SelectItem>
+                          <SelectItem value="spacious">Spacious</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                      <div>
+                        <Label htmlFor="enable-animations" className="text-sm font-medium">Enable Animations</Label>
+                        <p className="text-xs text-muted-foreground">Add smooth transitions and effects</p>
+                      </div>
+                      <Switch
+                        id="enable-animations"
+                        checked={websiteData.enableAnimations}
+                        onCheckedChange={(checked) => setWebsiteData({ ...websiteData, enableAnimations: checked })}
+                        data-testid="toggle-enable-animations"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="custom-css" className="text-sm font-medium mb-2 block">Custom CSS</Label>
+                      <Textarea
+                        id="custom-css"
+                        value={websiteData.customCSS}
+                        onChange={(e) => setWebsiteData({ ...websiteData, customCSS: e.target.value })}
+                        placeholder="/* Add your custom CSS here */"
+                        className="min-h-[200px] font-mono text-xs"
+                        data-testid="textarea-custom-css"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">Advanced users only - Add custom CSS to further customize your website</p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="social" className="mt-0">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Share2 className="w-4 h-4" />
+                        Social Media
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="toggle-social" className="text-xs text-muted-foreground">
+                          {sectionVisibility.social ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Label>
+                        <Switch
+                          id="toggle-social"
+                          checked={sectionVisibility.social}
+                          onCheckedChange={() => toggleSectionVisibility('social')}
+                          data-testid="toggle-visibility-social"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-3 block">Social Media Links</Label>
+                      <p className="text-xs text-muted-foreground mb-4">Add your social media profiles to display on your wedding website</p>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="facebook-url" className="text-sm mb-2 flex items-center gap-2">
+                            <Facebook className="w-4 h-4 text-blue-600" />
+                            Facebook
+                          </Label>
+                          <Input
+                            id="facebook-url"
+                            value={websiteData.facebookUrl}
+                            onChange={(e) => setWebsiteData({ ...websiteData, facebookUrl: e.target.value })}
+                            placeholder="https://facebook.com/yourprofile"
+                            data-testid="input-facebook-url"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="instagram-url" className="text-sm mb-2 flex items-center gap-2">
+                            <Instagram className="w-4 h-4 text-pink-600" />
+                            Instagram
+                          </Label>
+                          <Input
+                            id="instagram-url"
+                            value={websiteData.instagramUrl}
+                            onChange={(e) => setWebsiteData({ ...websiteData, instagramUrl: e.target.value })}
+                            placeholder="https://instagram.com/yourprofile"
+                            data-testid="input-instagram-url"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="twitter-url" className="text-sm mb-2 flex items-center gap-2">
+                            <Twitter className="w-4 h-4 text-sky-500" />
+                            Twitter
+                          </Label>
+                          <Input
+                            id="twitter-url"
+                            value={websiteData.twitterUrl}
+                            onChange={(e) => setWebsiteData({ ...websiteData, twitterUrl: e.target.value })}
+                            placeholder="https://twitter.com/yourprofile"
+                            data-testid="input-twitter-url"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-t border-border pt-4">
+                      <Label className="text-sm font-medium mb-3 block">Social Sharing Options</Label>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="social-share-buttons" className="text-sm">Show Share Buttons</Label>
+                          <Switch id="social-share-buttons" defaultChecked data-testid="toggle-social-share-buttons" />
+                        </div>
+                        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                          <Label htmlFor="social-icons-footer" className="text-sm">Display Icons in Footer</Label>
+                          <Switch id="social-icons-footer" defaultChecked data-testid="toggle-social-icons-footer" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </TabsContent>

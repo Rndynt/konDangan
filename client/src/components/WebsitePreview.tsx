@@ -77,7 +77,7 @@ export default function WebsitePreview({ data }: WebsitePreviewProps) {
 
   return (
     <div className="w-full bg-white" style={{ fontFamily: data.fontFamily }}>
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-white/80 border-b border-border h-20">
+      <nav className="sticky top-0 z-40 backdrop-blur-lg bg-white/80 border-b border-border h-20">
         <div className="max-w-6xl mx-auto px-6 h-full flex items-center justify-between">
           <button
             onClick={() => scrollToSection('hero')}
@@ -122,7 +122,7 @@ export default function WebsitePreview({ data }: WebsitePreviewProps) {
 
       <section 
         id="hero"
-        className="relative min-h-screen flex items-center justify-center text-center p-8 bg-cover bg-center pt-32"
+        className="relative min-h-screen flex items-center justify-center text-center p-8 bg-cover bg-center"
         style={{ backgroundImage: `url(${watercolorBg})` }}
       >
         <div className="relative z-10 max-w-3xl">
