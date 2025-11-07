@@ -39,7 +39,7 @@ export default function HomePage() {
       <nav className="border-b border-border backdrop-blur-lg bg-background/80 sticky top-0 z-50">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="flex items-center justify-between h-16">
-            <div className="font-serif text-xl font-semibold">Undangan.id</div>
+            <div className="font-serif text-xl font-semibold">konDangan.id</div>
             <div className="flex items-center gap-4">
               <Button variant="ghost" asChild data-testid="button-lihat-contoh">
                 <Link href="/templates">Lihat Contoh</Link>

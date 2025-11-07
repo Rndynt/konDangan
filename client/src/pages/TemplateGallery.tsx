@@ -46,7 +46,7 @@ export default function TemplateGallery() {
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="font-serif text-xl font-semibold hover-elevate rounded-md px-2 -ml-2" data-testid="link-home">
-              konDangan
+              konDangan.id
             </Link>
             <Button variant="outline" asChild data-testid="button-back">
               <Link href="/">Kembali</Link>

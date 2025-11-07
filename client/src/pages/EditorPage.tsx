@@ -58,7 +58,7 @@ export default function EditorPage() {
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/templates" className="font-serif text-xl font-semibold hover-elevate rounded-md px-2 -ml-2" data-testid="link-home">
-              konDangan
+              konDangan.id
             </Link>
             <div className="h-6 w-px bg-border" />
             <p className="font-medium text-muted-foreground">Website Undangan</p>
