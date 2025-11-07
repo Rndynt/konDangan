@@ -1,16 +1,17 @@
 import TemplateCard from '../TemplateCard';
-import weddingFloral from '@assets/generated_images/Wedding_invitation_template_floral_fe55e57a.png';
+import weddingPink from '@assets/generated_images/Wedding_website_template_elegant_pink_b3b8566b.png';
 
 export default function TemplateCardExample() {
   return (
     <div className="p-8 bg-background">
       <div className="max-w-xs">
         <TemplateCard 
-          id="wedding-floral"
-          title="Elegant Floral"
+          id="elegant-pink"
+          title="Elegant Blush"
           category="Pernikahan"
-          imageUrl={weddingFloral}
-          onSelect={(id) => console.log('Template selected:', id)}
+          imageUrl={weddingPink}
+          onPreview={(id) => console.log('Preview template:', id)}
+          onUse={(id) => console.log('Use template:', id)}
         />
       </div>
     </div>

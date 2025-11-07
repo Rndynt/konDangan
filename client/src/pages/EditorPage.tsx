@@ -3,181 +3,176 @@ import { useRoute, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Card } from "@/components/ui/card";
-import { Download, Save, Eye, Type, Image as ImageIcon, Sparkles, Palette, Hash } from "lucide-react";
-import AssetLibraryModal from "@/components/AssetLibraryModal";
-import weddingFloral from '@assets/generated_images/Wedding_invitation_template_floral_fe55e57a.png';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Monitor, Tablet, Smartphone, Eye, Save, Share2, Home, FileText, Image, Calendar, Users, Mail } from "lucide-react";
+import WebsitePreview from "@/components/WebsitePreview";
+
+type DeviceType = "desktop" | "tablet" | "mobile";
 
 export default function EditorPage() {
   const [, params] = useRoute("/editor/:templateId");
-  const [templateName, setTemplateName] = useState("Undangan Pernikahan");
-  const [assetLibraryOpen, setAssetLibraryOpen] = useState(false);
-  const [selectedFont, setSelectedFont] = useState("Inter");
-  const [fontSize, setFontSize] = useState([16]);
-  const [mainText, setMainText] = useState("Sarah & Ahmad");
-  const [dateText, setDateText] = useState("25 Desember 2025");
-  const [primaryColor, setPrimaryColor] = useState("#c9a961");
+  const [device, setDevice] = useState<DeviceType>("desktop");
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [publishedUrl, setPublishedUrl] = useState("");
 
-  const fonts = ["Inter", "Playfair Display", "Poppins", "Lora", "Montserrat"];
+  const [websiteData, setWebsiteData] = useState({
+    coupleName: "Sarah & Ahmad",
+    groomName: "Ahmad",
+    brideName: "Sarah",
+    weddingDate: "25 Desember 2025",
+    ceremonyTime: "08:00 - 10:00 WIB",
+    ceremonyLocation: "Masjid Istiqlal, Jakarta Pusat",
+    receptionTime: "11:00 - 14:00 WIB",
+    receptionLocation: "Balai Kartini, Jakarta Selatan",
+    ourStory: "Kami bertemu di sebuah kafe kecil di musim semi. Dari pertemuan sederhana itu, kami tahu bahwa ini adalah awal dari sesuatu yang istimewa.",
+    primaryColor: "#c9a961",
+    fontFamily: "Inter"
+  });
 
-  const handleSelectAsset = (assetId: string) => {
-    console.log('Asset added to canvas:', assetId);
-    setAssetLibraryOpen(false);
+  const fonts = ["Inter", "Playfair Display", "Poppins", "Lora", "Montserrat", "Cormorant Garamond"];
+
+  const deviceWidths = {
+    desktop: "100%",
+    tablet: "768px",
+    mobile: "375px"
+  };
+
+  const handlePublish = () => {
+    const url = `undangan.id/${websiteData.coupleName.toLowerCase().replace(/\s+/g, '-')}`;
+    setPublishedUrl(url);
+    console.log('Publishing website...', url);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(`https://${publishedUrl}`);
+    console.log('Link copied!');
   };
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      <nav className="border-b border-border h-16 flex-shrink-0">
+      <nav className="border-b border-border h-16 flex-shrink-0 backdrop-blur-lg bg-background/80 sticky top-0 z-50">
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/templates" className="font-serif text-xl font-semibold hover-elevate rounded-md px-2 -ml-2" data-testid="link-home">
               Undangan.id
             </Link>
             <div className="h-6 w-px bg-border" />
-            <Input
-              value={templateName}
-              onChange={(e) => setTemplateName(e.target.value)}
-              className="max-w-xs border-0 focus-visible:ring-0 px-2 font-medium"
-              data-testid="input-template-name"
-            />
+            <p className="font-medium text-muted-foreground">Website Undangan</p>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="outline" data-testid="button-preview">
-              <Eye className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
+            <div className="flex items-center gap-1 mr-2">
+              <Button 
+                variant={device === "desktop" ? "secondary" : "ghost"} 
+                size="icon"
+                onClick={() => setDevice("desktop")}
+                data-testid="button-device-desktop"
+              >
+                <Monitor className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant={device === "tablet" ? "secondary" : "ghost"} 
+                size="icon"
+                onClick={() => setDevice("tablet")}
+                data-testid="button-device-tablet"
+              >
+                <Tablet className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant={device === "mobile" ? "secondary" : "ghost"} 
+                size="icon"
+                onClick={() => setDevice("mobile")}
+                data-testid="button-device-mobile"
+              >
+                <Smartphone className="w-4 h-4" />
+              </Button>
+            </div>
             <Button variant="outline" data-testid="button-save">
               <Save className="w-4 h-4 mr-2" />
               Simpan
             </Button>
-            <Button data-testid="button-download">
-              <Download className="w-4 h-4 mr-2" />
-              Download
+            <Button 
+              onClick={() => setPublishModalOpen(true)}
+              data-testid="button-publish"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Publikasikan
             </Button>
           </div>
         </div>
       </nav>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-80 border-r border-border overflow-y-auto flex-shrink-0">
-          <div className="p-6">
-            <Accordion type="single" collapsible defaultValue="text">
-              <AccordionItem value="text">
-                <AccordionTrigger data-testid="accordion-trigger-text">
-                  <div className="flex items-center gap-2">
-                    <Type className="w-4 h-4" />
-                    <span>Teks</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-4 pt-2">
+        <aside className="w-80 border-r border-border overflow-hidden flex-shrink-0 flex flex-col">
+          <Tabs defaultValue="hero" className="flex-1 flex flex-col">
+            <div className="border-b border-border px-4 py-3">
+              <TabsList className="w-full grid grid-cols-3">
+                <TabsTrigger value="hero" data-testid="tab-hero">
+                  <Home className="w-4 h-4" />
+                </TabsTrigger>
+                <TabsTrigger value="story" data-testid="tab-story">
+                  <FileText className="w-4 h-4" />
+                </TabsTrigger>
+                <TabsTrigger value="event" data-testid="tab-event">
+                  <Calendar className="w-4 h-4" />
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <ScrollArea className="flex-1">
+              <div className="p-6">
+                <TabsContent value="hero" className="mt-0">
+                  <div className="space-y-6">
                     <div>
-                      <Label htmlFor="main-text" className="text-sm font-medium mb-2 block">Teks Utama</Label>
+                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                        <Home className="w-4 h-4" />
+                        Hero Section
+                      </h3>
+                    </div>
+                    <div>
+                      <Label htmlFor="couple-name" className="text-sm font-medium mb-2 block">Nama Pasangan</Label>
                       <Input
-                        id="main-text"
-                        value={mainText}
-                        onChange={(e) => setMainText(e.target.value)}
-                        data-testid="input-main-text"
+                        id="couple-name"
+                        value={websiteData.coupleName}
+                        onChange={(e) => setWebsiteData({ ...websiteData, coupleName: e.target.value })}
+                        data-testid="input-couple-name"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="date-text" className="text-sm font-medium mb-2 block">Tanggal</Label>
+                      <Label htmlFor="wedding-date" className="text-sm font-medium mb-2 block">Tanggal</Label>
                       <Input
-                        id="date-text"
-                        value={dateText}
-                        onChange={(e) => setDateText(e.target.value)}
-                        data-testid="input-date-text"
+                        id="wedding-date"
+                        value={websiteData.weddingDate}
+                        onChange={(e) => setWebsiteData({ ...websiteData, weddingDate: e.target.value })}
+                        data-testid="input-wedding-date"
                       />
                     </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="photo">
-                <AccordionTrigger data-testid="accordion-trigger-photo">
-                  <div className="flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4" />
-                    <span>Foto</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pt-2">
-                    <Button variant="outline" className="w-full" data-testid="button-upload-photo">
-                      Upload Foto
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="assets">
-                <AccordionTrigger data-testid="accordion-trigger-assets">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    <span>Asset</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pt-2">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => setAssetLibraryOpen(true)}
-                      data-testid="button-open-assets"
-                    >
-                      Buka Library Asset
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="colors">
-                <AccordionTrigger data-testid="accordion-trigger-colors">
-                  <div className="flex items-center gap-2">
-                    <Palette className="w-4 h-4" />
-                    <span>Warna</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-4 pt-2">
                     <div>
                       <Label htmlFor="primary-color" className="text-sm font-medium mb-2 block">Warna Utama</Label>
                       <div className="flex gap-2">
                         <Input
                           id="primary-color"
                           type="color"
-                          value={primaryColor}
-                          onChange={(e) => setPrimaryColor(e.target.value)}
+                          value={websiteData.primaryColor}
+                          onChange={(e) => setWebsiteData({ ...websiteData, primaryColor: e.target.value })}
                           className="h-10 w-20 cursor-pointer"
                           data-testid="input-primary-color"
                         />
                         <Input
-                          value={primaryColor}
-                          onChange={(e) => setPrimaryColor(e.target.value)}
+                          value={websiteData.primaryColor}
+                          onChange={(e) => setWebsiteData({ ...websiteData, primaryColor: e.target.value })}
                           className="flex-1"
                           data-testid="input-primary-color-hex"
                         />
                       </div>
                     </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="font">
-                <AccordionTrigger data-testid="accordion-trigger-font">
-                  <div className="flex items-center gap-2">
-                    <Hash className="w-4 h-4" />
-                    <span>Font</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-4 pt-2">
                     <div>
                       <Label htmlFor="font-family" className="text-sm font-medium mb-2 block">Font Family</Label>
-                      <Select value={selectedFont} onValueChange={setSelectedFont}>
+                      <Select value={websiteData.fontFamily} onValueChange={(value) => setWebsiteData({ ...websiteData, fontFamily: value })}>
                         <SelectTrigger id="font-family" data-testid="select-font-family">
                           <SelectValue />
                         </SelectTrigger>
@@ -190,77 +185,182 @@ export default function EditorPage() {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="story" className="mt-0">
+                  <div className="space-y-6">
                     <div>
-                      <Label htmlFor="font-size" className="text-sm font-medium mb-2 block">
-                        Font Size: {fontSize[0]}px
-                      </Label>
-                      <Slider
-                        id="font-size"
-                        value={fontSize}
-                        onValueChange={setFontSize}
-                        min={12}
-                        max={72}
-                        step={1}
-                        data-testid="slider-font-size"
+                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        Cerita Kami
+                      </h3>
+                    </div>
+                    <div>
+                      <Label htmlFor="groom-name" className="text-sm font-medium mb-2 block">Nama Mempelai Pria</Label>
+                      <Input
+                        id="groom-name"
+                        value={websiteData.groomName}
+                        onChange={(e) => setWebsiteData({ ...websiteData, groomName: e.target.value })}
+                        data-testid="input-groom-name"
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="bride-name" className="text-sm font-medium mb-2 block">Nama Mempelai Wanita</Label>
+                      <Input
+                        id="bride-name"
+                        value={websiteData.brideName}
+                        onChange={(e) => setWebsiteData({ ...websiteData, brideName: e.target.value })}
+                        data-testid="input-bride-name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="our-story" className="text-sm font-medium mb-2 block">Cerita Pertama Bertemu</Label>
+                      <Textarea
+                        id="our-story"
+                        value={websiteData.ourStory}
+                        onChange={(e) => setWebsiteData({ ...websiteData, ourStory: e.target.value })}
+                        className="min-h-[120px]"
+                        data-testid="textarea-our-story"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">Upload Foto</Label>
+                      <Button variant="outline" className="w-full" data-testid="button-upload-photo">
+                        <Image className="w-4 h-4 mr-2" />
+                        Upload Foto Pasangan
+                      </Button>
+                    </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+                </TabsContent>
+
+                <TabsContent value="event" className="mt-0">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Detail Acara
+                      </h3>
+                    </div>
+                    <div className="border-b border-border pb-6">
+                      <h4 className="font-medium mb-4">Akad Nikah</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="ceremony-time" className="text-sm font-medium mb-2 block">Waktu</Label>
+                          <Input
+                            id="ceremony-time"
+                            value={websiteData.ceremonyTime}
+                            onChange={(e) => setWebsiteData({ ...websiteData, ceremonyTime: e.target.value })}
+                            data-testid="input-ceremony-time"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="ceremony-location" className="text-sm font-medium mb-2 block">Lokasi</Label>
+                          <Textarea
+                            id="ceremony-location"
+                            value={websiteData.ceremonyLocation}
+                            onChange={(e) => setWebsiteData({ ...websiteData, ceremonyLocation: e.target.value })}
+                            data-testid="textarea-ceremony-location"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-4">Resepsi</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="reception-time" className="text-sm font-medium mb-2 block">Waktu</Label>
+                          <Input
+                            id="reception-time"
+                            value={websiteData.receptionTime}
+                            onChange={(e) => setWebsiteData({ ...websiteData, receptionTime: e.target.value })}
+                            data-testid="input-reception-time"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="reception-location" className="text-sm font-medium mb-2 block">Lokasi</Label>
+                          <Textarea
+                            id="reception-location"
+                            value={websiteData.receptionLocation}
+                            onChange={(e) => setWebsiteData({ ...websiteData, receptionLocation: e.target.value })}
+                            data-testid="textarea-reception-location"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </div>
+            </ScrollArea>
+          </Tabs>
         </aside>
 
-        <main className="flex-1 overflow-auto bg-muted/20">
-          <div className="min-h-full p-12 flex items-center justify-center">
-            <Card className="w-full max-w-2xl aspect-[3/4] shadow-lg overflow-hidden">
-              <div 
-                className="w-full h-full relative bg-cover bg-center p-12 flex flex-col items-center justify-center text-center"
-                style={{ 
-                  backgroundImage: `url(${weddingFloral})`,
-                  fontFamily: selectedFont
-                }}
-              >
-                <div 
-                  className="text-4xl font-serif mb-4"
-                  style={{ 
-                    color: primaryColor,
-                    fontSize: `${fontSize[0] * 2}px`
-                  }}
-                  data-testid="preview-main-text"
-                >
-                  {mainText}
-                </div>
-                <div 
-                  className="text-lg"
-                  style={{ 
-                    color: primaryColor,
-                    fontSize: `${fontSize[0]}px`
-                  }}
-                  data-testid="preview-date-text"
-                >
-                  {dateText}
-                </div>
-              </div>
-            </Card>
+        <main className="flex-1 overflow-auto bg-muted/20 flex items-start justify-center p-8">
+          <div 
+            className="bg-white shadow-2xl transition-all duration-300 overflow-hidden"
+            style={{ 
+              width: deviceWidths[device],
+              maxWidth: "100%"
+            }}
+          >
+            <ScrollArea className="h-[calc(100vh-160px)]">
+              <WebsitePreview data={websiteData} />
+            </ScrollArea>
           </div>
         </main>
-
-        <aside className="w-72 border-l border-border overflow-y-auto flex-shrink-0 hidden xl:block">
-          <div className="p-6">
-            <h3 className="text-sm font-medium mb-4 text-muted-foreground">Properties</h3>
-            <p className="text-sm text-muted-foreground">
-              Pilih elemen untuk mengedit properties
-            </p>
-          </div>
-        </aside>
       </div>
 
-      <AssetLibraryModal
-        open={assetLibraryOpen}
-        onOpenChange={setAssetLibraryOpen}
-        onSelectAsset={handleSelectAsset}
-      />
+      <Dialog open={publishModalOpen} onOpenChange={setPublishModalOpen}>
+        <DialogContent data-testid="dialog-publish">
+          <DialogHeader>
+            <DialogTitle>Publikasikan Website Undangan</DialogTitle>
+            <DialogDescription>
+              Website undangan Anda siap dipublikasikan. Bagikan link ini kepada tamu undangan.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {!publishedUrl ? (
+            <div className="space-y-4 py-4">
+              <div>
+                <Label htmlFor="website-url" className="text-sm font-medium mb-2 block">URL Website</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="website-url"
+                    value={`undangan.id/${websiteData.coupleName.toLowerCase().replace(/\s+/g, '-')}`}
+                    readOnly
+                    className="flex-1"
+                    data-testid="input-website-url"
+                  />
+                </div>
+              </div>
+              <Button 
+                className="w-full" 
+                onClick={handlePublish}
+                data-testid="button-confirm-publish"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Publikasikan Sekarang
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-muted/50 rounded-lg text-center">
+                <p className="text-sm text-muted-foreground mb-2">Website Anda telah dipublikasikan!</p>
+                <p className="font-mono font-semibold text-primary" data-testid="text-published-url">
+                  {publishedUrl}
+                </p>
+              </div>
+              <Button 
+                className="w-full" 
+                onClick={handleCopyLink}
+                data-testid="button-copy-link"
+              >
+                Salin Link
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
